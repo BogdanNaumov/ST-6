@@ -156,6 +156,18 @@ class AppTest {
         assertEquals(Game.INF, result);
     }
 
+    @Test
+    void generateMoves_EmptyBoard_ReturnsAllMoves() {
+        Game game = new Game();
+        char[] board = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
+        ArrayList<Integer> moves = new ArrayList<>();
+        game.generateMoves(board, moves);
+        assertEquals(9, moves.size());
+        for (int i = 0; i < 9; i++) {
+            assertTrue(moves.contains(i));
+        }
+    }
+
     // Тест состояния ячейки после хода
     @Test
     void TicTacToeCell_SetMarker_DisablesButtonAndSetsText() {
@@ -183,6 +195,42 @@ class AppTest {
             assertTrue(comp instanceof TicTacToeCell);
         }
     }
+
+    @Test
+    void TicTacToeCell_DefaultState_IsCorrect() {
+        TicTacToeCell cell = new TicTacToeCell(3, 1, 1);
+        assertEquals(' ', cell.getMarker());
+        assertTrue(cell.isEnabled());
+        assertEquals(1, cell.getRow());
+        assertEquals(1, cell.getCol());
+    }
+
+    @Test
+    void TicTacToePanel_GameBoardUpdatesOnClick() {
+        TicTacToePanel panel = new TicTacToePanel(new GridLayout(3,3));
+        TicTacToeCell cell = (TicTacToeCell) panel.getComponent(0);
+        cell.doClick();
+        assertEquals('X', cell.getMarker());
+    }
+
+    @Test
+    void MiniMax_PrintsDebugOutput() {
+        Game game = new Game();
+        char[] board = {'X', 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
+        game.symbol = 'O';
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        game.MiniMax(board, game.player2);
+
+        String output = outContent.toString();
+        assertTrue(output.contains("minimax"));
+        System.setOut(System.out);  // Восстановить stdout
+    }
+
+
+
 
     @Test
     void Game_MinMove_ReturnsCorrectValue() {
